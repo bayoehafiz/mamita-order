@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function submitPin(pin: string) {
-  const expectedPin = process.env.ADMIN_PIN;
+  const expectedPin = (process.env.ADMIN_PIN || "").trim();
   
   if (!expectedPin) {
     return { success: false, error: "System error: ADMIN_PIN belum disetting di environment variables." };
