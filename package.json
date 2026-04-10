@@ -1,6 +1,6 @@
 {
   "name": "mamita-order",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "release": "standard-version",
+    "prepare": "husky"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.0",
@@ -17,12 +19,18 @@
     "react-dom": "19.1.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@types/node": "22.15.21",
     "@types/react": "19.1.2",
     "@types/react-dom": "19.1.2",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.14",
+    "husky": "^9.1.7",
     "postcss": "^8.4.49",
+    "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.14",
     "typescript": "5.8.3"
   }
