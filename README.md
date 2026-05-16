@@ -10,7 +10,7 @@ Mobile-first pre-order landing page for **Martabak Bihun Mamita**. Customers fil
 | Language | TypeScript |
 | Styling | Tailwind CSS 3 |
 | Database | [Supabase](https://supabase.com/) (PostgreSQL + Realtime) |
-| Hosting | [Vercel](https://vercel.com/) |
+| Hosting | VPS (self-hosted) |
 
 ## Features
 
@@ -115,13 +115,39 @@ Changes are written to Supabase via a secure server-side API and reflected on th
 
 ## Deployment
 
-Deployed on **Vercel** with auto-deploy on push to `main`.
+Self-hosted on a VPS via Docker.
 
-1. Push code to GitHub
-2. Vercel auto-builds and deploys
-3. Set environment variables in Vercel project settings
+### Prerequisites
 
-> **Note:** Never commit `.env.local` to version control. Use Vercel's environment variables for production.
+- Docker & Docker Compose on VPS
+- `.env.production` file with production credentials (never commit secrets)
+- Nginx configured as reverse proxy (see `deploy/nginx/mamita-order.conf`)
+- Domain DNS pointing to VPS IP
+
+### GitHub Secrets (for CI/CD)
+
+| Secret | Description |
+|--------|-------------|
+| `VPS_SSH_KEY` | Private SSH key for deploy user |
+| `VPS_SSH_HOST_KEY` | `ssh-keyscan` output of VPS host key |
+| `VPS_HOST` | VPS IP or hostname |
+| `VPS_USER` | SSH user (e.g. `masbay`) |
+| `VPS_PROJECT_DIR` | Deploy path (e.g. `~/projects/mamita-order`) |
+
+### Manual Deploy
+
+```bash
+REMOTE_HOST=103.183.74.22 bash deploy/deploy.sh
+```
+
+### Nginx Setup
+
+```bash
+sudo ln -s ~/projects/mamita-order/deploy/nginx/mamita-order.conf /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+> **Note:** Never commit `.env.local` or `.env.production` to version control.
 
 ## Database Schema
 
