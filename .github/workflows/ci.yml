@@ -15,6 +15,10 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      SUPABASE_PORTAL_TABLE: ${{ vars.SUPABASE_PORTAL_TABLE }}
+      SUPABASE_PORTAL_STATE_ID: ${{ vars.SUPABASE_PORTAL_STATE_ID }}
       NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       NEXT_PUBLIC_SUPABASE_PORTAL_TABLE: ${{ vars.NEXT_PUBLIC_SUPABASE_PORTAL_TABLE }}
@@ -69,6 +73,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            SUPABASE_URL=${{ vars.SUPABASE_URL }}
+            SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+            SUPABASE_PORTAL_TABLE=${{ vars.SUPABASE_PORTAL_TABLE }}
+            SUPABASE_PORTAL_STATE_ID=${{ vars.SUPABASE_PORTAL_STATE_ID }}
             NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
             NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
             NEXT_PUBLIC_SUPABASE_PORTAL_TABLE=${{ vars.NEXT_PUBLIC_SUPABASE_PORTAL_TABLE }}
