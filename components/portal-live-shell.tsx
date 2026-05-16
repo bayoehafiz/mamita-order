@@ -26,6 +26,7 @@ function mapRealtimePayload(row: Record<string, unknown>): PortalState {
 }
 
 const PORTAL_TABLE = process.env.NEXT_PUBLIC_SUPABASE_PORTAL_TABLE || "portal_state";
+const PORTAL_SCHEMA = process.env.NEXT_PUBLIC_SUPABASE_SCHEMA || "public";
 
 // ─── Main component ───
 
@@ -41,7 +42,7 @@ export function PortalLiveShell({ initialConfig }: PortalLiveShellProps) {
       .channel("portal-state-live")
       .on(
         "postgres_changes",
-        { event: "UPDATE", schema: "public", table: PORTAL_TABLE },
+        { event: "UPDATE", schema: PORTAL_SCHEMA, table: PORTAL_TABLE },
         (payload) => {
           if (payload.new) {
             setConfig(mapRealtimePayload(payload.new));

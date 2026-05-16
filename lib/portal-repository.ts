@@ -21,6 +21,7 @@ function requireSupabaseConfig() {
   const SUPABASE_URL = process.env.SUPABASE_URL?.replace(/\/$/, "");
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const PORTAL_STATE_TABLE = process.env.SUPABASE_PORTAL_TABLE || "portal_state";
+  const SUPABASE_SCHEMA = process.env.SUPABASE_SCHEMA || "public";
 
   if (!SUPABASE_URL) {
     throw new Error("SUPABASE_URL is not set");
@@ -32,14 +33,16 @@ function requireSupabaseConfig() {
 
   return {
     baseUrl: `${SUPABASE_URL}/rest/v1/${PORTAL_STATE_TABLE}`,
-    serviceKey: SUPABASE_SERVICE_ROLE_KEY
+    serviceKey: SUPABASE_SERVICE_ROLE_KEY,
+    schema: SUPABASE_SCHEMA
   };
 }
 
-function buildHeaders(serviceKey: string) {
+function buildHeaders(serviceKey: string, schema?: string) {
   return {
     apikey: serviceKey,
-    Authorization: `Bearer ${serviceKey}`
+    Authorization: `Bearer ${serviceKey}`,
+    ...(schema ? { "Accept-Profile": schema } : {})
   };
 }
 
@@ -64,13 +67,13 @@ async function fetchWithTimeout(resource: string, init: RequestInit & { timeoutM
 }
 
 export async function readPortalStateRow(): Promise<PortalStateRow | null> {
-  const { baseUrl, serviceKey } = requireSupabaseConfig();
+  const { baseUrl, serviceKey, schema } = requireSupabaseConfig();
   const params = withIdSearchParams();
   params.set("select", "*");
   params.set("limit", "1");
 
   const response = await fetchWithTimeout(`${baseUrl}?${params.toString()}`, {
-    headers: buildHeaders(serviceKey),
+    headers: buildHeaders(serviceKey, schema),
     cache: "no-store",
     timeoutMs: 5000
   });
@@ -89,7 +92,7 @@ export async function readPortalStateRow(): Promise<PortalStateRow | null> {
 }
 
 export async function upsertPortalStateRow(payload: PortalStateWritePayload): Promise<PortalStateRow> {
-  const { baseUrl, serviceKey } = requireSupabaseConfig();
+  const { baseUrl, serviceKey, schema } = requireSupabaseConfig();
 
   // First, check if the row exists
   const existing = await readPortalStateRow();
@@ -108,7 +111,7 @@ export async function upsertPortalStateRow(payload: PortalStateWritePayload): Pr
   const response = await fetchWithTimeout(`${baseUrl}?${params.toString()}`, {
     method: "PATCH",
     headers: {
-      ...buildHeaders(serviceKey),
+      ...buildHeaders(serviceKey, schema),
       "Content-Type": "application/json",
       // Force body return even if table preference differs
       Prefer: "return=representation"
@@ -130,11 +133,11 @@ export async function upsertPortalStateRow(payload: PortalStateWritePayload): Pr
 }
 
 async function insertPortalStateRow(payload: PortalStateWritePayload): Promise<PortalStateRow> {
-  const { baseUrl, serviceKey } = requireSupabaseConfig();
+  const { baseUrl, serviceKey, schema } = requireSupabaseConfig();
   const response = await fetch(baseUrl, {
     method: "POST",
     headers: {
-      ...buildHeaders(serviceKey),
+      ...buildHeaders(serviceKey, schema),
       "Content-Type": "application/json",
       Prefer: "return=representation"
     },
