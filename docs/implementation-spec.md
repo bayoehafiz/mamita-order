@@ -1,5 +1,12 @@
 # Mamita Portal Implementation Spec
 
+> **Note:** This spec was written before deployment. The actual deployed architecture differs:
+> - **Hosting:** Self-hosted VPS (Docker + Docker Compose) instead of Vercel
+> - **Database:** Schema-isolated (`mamita` schema) in shared Supabase project `lulabyte-shared` (not a dedicated project)
+> - **CI/CD:** GitHub Actions → GHCR → Watchtower auto-deploy (no direct Vercel/SSH deploy)
+> - **Database access:** All queries use `Accept-Profile: mamita` header for schema isolation
+> See [docs/supabase.md](./supabase.md) and [README.md](../README.md) for current architecture details.
+
 ## Purpose
 
 This document turns the current PRD into a build-ready implementation spec for the Mamita preorder portal.
@@ -592,7 +599,19 @@ If redirect cannot be completed:
 
 ## Technical Stack
 
-### Recommended
+### Actual (Deployed)
+
+- Next.js 15 (App Router)
+- TypeScript
+- Tailwind CSS 3
+- Supabase (PostgreSQL + Realtime) with schema isolation (`mamita` schema)
+- Docker (multi-stage, `output: standalone`, Alpine, non-root)
+- GHCR for image registry
+- Watchtower for auto-deploy
+- Nginx reverse proxy with Let's Encrypt SSL
+- VPS (self-hosted, Ubuntu 22.04)
+
+### Recommended (as spec'd originally)
 
 - Next.js
 - TypeScript
