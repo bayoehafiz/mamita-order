@@ -17,14 +17,11 @@ export type PortalStateRow = PortalStateWritePayload & {
   updated_at: string | null;
 };
 
-const SUPABASE_URL = process.env.SUPABASE_URL?.replace(/\/$/, "");
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const PORTAL_STATE_TABLE = process.env.SUPABASE_PORTAL_TABLE || "portal_state";
-const PORTAL_STATE_ID = Number.isFinite(Number(process.env.SUPABASE_PORTAL_STATE_ID))
-  ? Number(process.env.SUPABASE_PORTAL_STATE_ID)
-  : 1;
-
 function requireSupabaseConfig() {
+  const SUPABASE_URL = process.env.SUPABASE_URL?.replace(/\/$/, "");
+  const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const PORTAL_STATE_TABLE = process.env.SUPABASE_PORTAL_TABLE || "portal_state";
+
   if (!SUPABASE_URL) {
     throw new Error("SUPABASE_URL is not set");
   }
@@ -48,7 +45,10 @@ function buildHeaders(serviceKey: string) {
 
 function withIdSearchParams() {
   const params = new URLSearchParams();
-  params.set("id", `eq.${PORTAL_STATE_ID}`);
+  const id = Number.isFinite(Number(process.env.SUPABASE_PORTAL_STATE_ID))
+    ? Number(process.env.SUPABASE_PORTAL_STATE_ID)
+    : 1;
+  params.set("id", `eq.${id}`);
   return params;
 }
 
@@ -139,7 +139,9 @@ async function insertPortalStateRow(payload: PortalStateWritePayload): Promise<P
       Prefer: "return=representation"
     },
     body: JSON.stringify({
-      id: PORTAL_STATE_ID,
+      id: Number.isFinite(Number(process.env.SUPABASE_PORTAL_STATE_ID))
+        ? Number(process.env.SUPABASE_PORTAL_STATE_ID)
+        : 1,
       ...payload,
       updated_at: new Date().toISOString()
     })
