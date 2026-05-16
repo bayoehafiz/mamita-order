@@ -14,6 +14,10 @@ env:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_SUPABASE_PORTAL_TABLE: ${{ vars.NEXT_PUBLIC_SUPABASE_PORTAL_TABLE }}
     steps:
       - uses: actions/checkout@v4
 
@@ -64,3 +68,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_SUPABASE_URL=${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+            NEXT_PUBLIC_SUPABASE_PORTAL_TABLE=${{ vars.NEXT_PUBLIC_SUPABASE_PORTAL_TABLE }}

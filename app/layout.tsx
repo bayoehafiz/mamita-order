@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Mamita",
   },
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
